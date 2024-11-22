@@ -1,6 +1,8 @@
-#include "../inc/MathFunctions.h"
-#include "../inc/constants.h"
+#include "../inc/BasicOperations.h"
+#include "../inc/SimpleCalculator.h"
+#include "../inc/Constants.h"
 #include "../inc/Utils.h"
+#include "../inc/Trig.h"
 #include <cmath>
 #include <iostream>
 #include <regex> 
@@ -11,36 +13,26 @@ std::unordered_map<std::string, double> variables;  // Definition of 'variables'
 
 using namespace std;
 
-double add(double val1, double val2) { return val1 + val2; }
-double subtract(double val1, double val2) { return val1 - val2; }
-double multiply(double val1, double val2) { return val1 * val2; }
-double divide(double val1, double val2) {
+using namespace MathOperations;
+
+double BasicOperations::add(double val1, double val2) { return val1 + val2; }
+double BasicOperations::subtract(double val1, double val2) { return val1 - val2; }
+double BasicOperations::multiply(double val1, double val2) { return val1 * val2; }
+double BasicOperations::divide(double val1, double val2) {
     if (val2 == 0) {
         std::cerr << "Error: Division by zero. Returning NaN." << std::endl;
         return std::numeric_limits<double>::quiet_NaN();
     }
     return val1 / val2;
 }
-double exponent(double val1, double val2) { 
+double BasicOperations::exponent(double val1, double val2) { 
     
     return pow(val1, val2); 
     }
 
-// Additional math operations and functions...
-
-double getVarMath(std::string my_Var) {
-    if (variables.find(my_Var) != variables.end()) {
-        return variables[my_Var];
-    }
-    else {
-        throw string("ERROR: Invalid Input or Function/Variable not found."+my_Var);
-        // return std::numeric_limits<double>::quiet_NaN();
-    }
-}
-
 
 // Function to validate Hexadecimal input data
-bool validateHex_Input(string hex_Value)
+bool Utils::validateHex_Input(string hex_Value)
 {
     string chars = "0x";
     for (char c : chars)
@@ -111,43 +103,3 @@ void string_Filter(char *str)
     str[++i] = '\0';
 }
 
-double sinDegSolv(double f)
-{
-    return sin((f * PI) / 180.0);
-}
-
-double sinRadSolv(double f)
-{
-    return sin(f);
-}
-
-double asinDegSolv(double f)
-{
-    return (asin(f) * 180.0) / PI;
-}
-
-double asinRadSolv(double f)
-{
-    return asin(f);
-}
-
-// Functions for solving cosine
-double cosFunc(double f)
-{
-    return cos((f * PI) / 180.0);
-}
-
-double cosRadSolv(double f)
-{
-    return cos(f);
-}
-
-double acosDegSolv(double f)
-{
-    return (acos(f) * 180.0) / PI;
-}
-
-double acosRadSolv(double f)
-{
-    return acos(f);
-}

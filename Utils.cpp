@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool check_StrIsNum(string s)
+bool Utils::check_StrIsNum(string s)
 {
     for (long unsigned int i = 0; i < s.size(); i++)
     {
@@ -18,18 +18,14 @@ bool check_StrIsNum(string s)
     return true;
 }
 
-// void remove_Spaces(std::string &s) {
-//     s.erase(std::remove_if(s.begin(), s.end(), ::isspace), s.end());
-//     cout<< "removed spaces: "+s<<endl;
-// }
-void remove_Spaces(std::string &s) {
+void Utils::remove_Spaces(std::string &s) {
     regex r("[ ]+");
 
     s = regex_replace(s, r, "");
     // cout<< "removed spaces: "+s<<endl;
 }
 
-std::string getFileNameWithoutExtension(const std::string filePath) {
+std::string Utils::getFileNameWithoutExtension(const std::string filePath) {
     // Find the last path separator (handles both Linux and Windows paths)
     size_t lastSlashPos = filePath.find_last_of("/\\");
     
@@ -51,7 +47,7 @@ std::string getFileNameWithoutExtension(const std::string filePath) {
 
 
 
-bool stringBinary(string str) {
+bool Utils::stringBinary(string str) {
 
 
     if (!str.empty() && str.back() == 'b') {
@@ -68,7 +64,7 @@ bool stringBinary(string str) {
     return true;
 }
 
-int BinToDec(int BinaryBits)
+int Utils::BinToDec(int BinaryBits)
 {
     int dec = 0, i = 0, rem;
     while (BinaryBits != 0)
@@ -82,11 +78,11 @@ int BinToDec(int BinaryBits)
     return dec;
 }
 
-bool validateHexInput(string hexValue) {
+bool Utils::validateHexInput(string hexValue) {
     return hexValue.find_first_not_of("0123456789ABCDEFabcdef") == std::string::npos;
 }
 
-int hexToDec(string hexValue) {
+int Utils::hexToDec(string hexValue) {
     int dec = 0, base = 1;
     for (auto it = hexValue.rbegin(); it != hexValue.rend(); ++it) {
         if (*it >= '0' && *it <= '9')
@@ -98,7 +94,7 @@ int hexToDec(string hexValue) {
     return dec;
 }
 
-bool check_Substring(string s2, string s1)
+bool Utils::check_Substring(string s2, string s1)
 {
     int counter = 0; // pointing s2
     int i = 0;

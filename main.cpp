@@ -1,9 +1,10 @@
-#include "../inc/SimpleCalculator.h"
-#include "../inc/MathFunctions.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
 #include <string>
+#include "../inc/SimpleCalculator.h"
+#include "../inc/BasicOperations.h"
+
 
 using namespace std;
 

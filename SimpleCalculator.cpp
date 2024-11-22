@@ -1,11 +1,15 @@
 #include "../inc/SimpleCalculator.h"
-#include "../inc/constants.h"  // For constants like PI and EULER
+#include "../inc/Constants.h"  // For constants like PI and EULER
 #include "../inc/Utils.h"
+#include "../inc/Trig.h"
 #include <regex>
 #include <chrono>
 #include <thread>
 #include <fstream>
 #include <cstdlib>
+
+using namespace MathOperations;
+using namespace TrigRatio;
 
 // Constructor: initializes predefined constants
 SimpleCalculator::SimpleCalculator() {
@@ -35,7 +39,7 @@ bool SimpleCalculator::fileExecution(string fileName) {
     }
 
     // Full path to the output file
-    string outputFileName = getFileNameWithoutExtension(fileName);
+    string outputFileName = Utils::getFileNameWithoutExtension(fileName);
     string outputFilePath = folderName + "/" + outputFileName;
 
     // if (outFile.is_open()) 
@@ -81,7 +85,7 @@ bool SimpleCalculator::fileExecution(string fileName) {
     double result;
 
     while (getline(inputFile, line)) {
-        remove_Spaces(line);
+        Utils::remove_Spaces(line);
         try {
             if (line == "----") {
                 cout << "----" << endl;
@@ -115,7 +119,7 @@ bool SimpleCalculator::variableDef(string line) {
         int equalsIndex = line.find("=");
         string myVar = line.substr(0, equalsIndex);
         string math = line.substr(equalsIndex + 1);
-        remove_Spaces(myVar);
+        Utils::remove_Spaces(myVar);
         double result;
 
         if (mathFunc(math, result)) {
@@ -190,56 +194,56 @@ bool SimpleCalculator::mathFunc(string math, double &result)
     }
 
     // Run the mathematical operation functions
-    mathOp(math, "^", exponent);
-    mathOp(math, "*", multiply);
-    mathOp(math, "/", divide);
-    mathOp(math, "+", add);
-    mathOp(math, "-", subtract);
+    mathOp(math, "^", BasicOperations::exponent);
+    mathOp(math, "*", BasicOperations::multiply);
+    mathOp(math, "/", BasicOperations::divide);
+    mathOp(math, "+", BasicOperations::add);
+    mathOp(math, "-", BasicOperations::subtract);
 
     // Run the sine Calculation Function functions
-    mathFunc(math, "asinr", asinRadSolv);
-    mathFunc(math, "sinr", sinRadSolv);
-    mathFunc(math, "asin", asinDegSolv);
-    mathFunc(math, "sin", sinDegSolv);
+    mathFunc(math, "asinr", Trig::asinRadSolv);
+    mathFunc(math, "sinr", Trig::sinRadSolv);
+    mathFunc(math, "asin", Trig::asinDegSolv);
+    mathFunc(math, "sin", Trig::sinDegSolv);
 
     // Run the cosine Calculation functions
-    mathFunc(math, "acosr", acosRadSolv);
-    mathFunc(math, "cosr", cosRadSolv);
-    mathFunc(math, "acos", acosDegSolv);
-    mathFunc(math, "cos", cosFunc);
+    mathFunc(math, "acosr", Trig::acosRadSolv);
+    mathFunc(math, "cosr", Trig::cosRadSolv);
+    mathFunc(math, "acos", Trig::acosDegSolv);
+    mathFunc(math, "cos", Trig::cosFunc);
 
-    remove_Spaces(math);
+    Utils::remove_Spaces(math);
     int binValue, decnumber;
 
-    if (check_StrIsNum(math))
+    if (Utils::check_StrIsNum(math))
     {
         result = stof(math);
 
     }
-    else if (stringBinary(math) && check_Substring("b", math))
+    else if (Utils::stringBinary(math) && Utils::check_Substring("b", math))
     {
 
         math.erase(remove(math.begin(), math.end(), 'b'), math.end());
 
         binValue = stoi(math);
-        decnumber = BinToDec(binValue);
+        decnumber = Utils::BinToDec(binValue);
         math = to_string(decnumber);
         result = stof(math);
     }
-    else if (validateHex_Input(math) && check_Substring("0x", math))
+    else if (Utils::validateHex_Input(math) && Utils::check_Substring("0x", math))
     {
 
     if (math.substr(0, 2) == "0x") {
             math = math.substr(2);
         }
 
-        decnumber = hexToDec(math);
+        decnumber = Utils::hexToDec(math);
         math = to_string(decnumber);
         result = stof(math);
     }
     else
     {
-        result = getVarMath(math);
+        result = SimpleCalculator::getVarMath(math);
     }
 
     return true;
@@ -262,7 +266,7 @@ void SimpleCalculator::mathOp(string &math, string symbol, const function<double
     {
         string sub = sm[0];
 
-        remove_Spaces(sub);
+        Utils::remove_Spaces(sub);
 
         int splitIndex = sub.find(symbol);
 
@@ -274,67 +278,67 @@ void SimpleCalculator::mathOp(string &math, string symbol, const function<double
         int binValue, decnumber;
 
         // Check if the right side is a variable and if it is access its value from one of the maps.
-        if (check_StrIsNum(right))
+        if (Utils::check_StrIsNum(right))
         {
             val2 = stof(right);
         }
-        else if (stringBinary(right) && check_Substring("b", right))
+        else if (Utils::stringBinary(right) && Utils::check_Substring("b", right))
         {
 
             right.erase(remove(right.begin(), right.end(), 'b'), right.end());
 
             binValue = stoi(right);
-            decnumber = BinToDec(binValue);
+            decnumber = Utils::BinToDec(binValue);
             right = to_string(decnumber);
             val2 = stof(right);
         }
-        else if (validateHex_Input(right) && check_Substring("0x", right))
+        else if (Utils::validateHex_Input(right) && Utils::check_Substring("0x", right))
         {
             string chars = "0x";
             for (char c : chars)
             {
                 right.erase(remove(right.begin(), right.end(), c), right.end());
             }
-            decnumber = hexToDec(right);
+            decnumber = Utils::hexToDec(right);
             right = to_string(decnumber);
             val2 = stof(right);
         }
         else if (variables.find(right) != variables.end())
         {
-            val2 = getVarMath(right);
+            val2 = SimpleCalculator::getVarMath(right);
         }
 
         // Check if the left side is a variable and if it is access its value from one of the maps.
-        if (check_StrIsNum(left))
+        if (Utils::check_StrIsNum(left))
         {
 
             val1 = stof(left);
         }
-        else if (stringBinary(left) && check_Substring("b", left))
+        else if (Utils::stringBinary(left) && Utils::check_Substring("b", left))
         {
 
             left.erase(remove(left.begin(), left.end(), 'b'), left.end());
 
             binValue = stoi(left);
-            decnumber = BinToDec(binValue);
+            decnumber = Utils::BinToDec(binValue);
             left = to_string(decnumber);
             val1 = stof(left);
         }
-        else if (validateHex_Input(left) && check_Substring("0x", left))
+        else if (Utils::validateHex_Input(left) && Utils::check_Substring("0x", left))
         {
             string chars = "0x";
             for (char c : chars)
             {
                 left.erase(remove(left.begin(), left.end(), c), left.end());
             }
-            decnumber = hexToDec(left);
+            decnumber = Utils::hexToDec(left);
             left = to_string(decnumber);
             val2 = stof(left);
         }
         else
 
         {
-            val1 = getVarMath(left);
+            val1 = SimpleCalculator::getVarMath(left);
         }
 
         // Solve the math for the operator using the given function
@@ -364,17 +368,17 @@ void SimpleCalculator::mathFunc(string &math, string symbol, const function<doub
     while (regex_search(math, sm, reg))
     {
         string value = sm[0].str().substr(symbol.size());
-        remove_Spaces(value);
+        Utils::remove_Spaces(value);
         double doubleValue;
 
         // Check if the right side is a variable and if it is access its value from one of the maps.
-        if (check_StrIsNum(value))
+        if (Utils::check_StrIsNum(value))
         {
             doubleValue = stof(value);
         }
         else if (variables.find(value) != variables.end())
         {
-            doubleValue = getVarMath(value);
+            doubleValue = SimpleCalculator::getVarMath(value);
         }
 
         // Solve for the value using the given function pointer
@@ -394,7 +398,6 @@ void SimpleCalculator::mathFunc(string &math, string symbol, const function<doub
     }
 }
 
-
 // Retrieves the value of a defined variable, returns NaN if not found
 double SimpleCalculator::getVarMath(string my_Var)
 {
@@ -408,3 +411,15 @@ double SimpleCalculator::getVarMath(string my_Var)
         return numeric_limits<double>::quiet_NaN();
     }
 }
+
+// Additional math operations and functions...
+
+// double SimpleCalculator::getVarMath(std::string my_Var) {
+//     if (variables.find(my_Var) != variables.end()) {
+//         return variables[my_Var];
+//     }
+//     else {
+//         throw string("ERROR: Invalid Input or Function/Variable not found."+my_Var);
+//         // return std::numeric_limits<double>::quiet_NaN();
+//     }
+// }
